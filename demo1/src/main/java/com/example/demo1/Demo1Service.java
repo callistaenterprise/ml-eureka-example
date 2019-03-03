@@ -14,7 +14,11 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.toList;
 
 @RestController
 public class Demo1Service {
@@ -41,9 +45,23 @@ public class Demo1Service {
     }
 
     @GetMapping(
-        value    = "/demo2services",
+        value = "/demo2services/overview",
         produces = "application/json")
-    public List<ServiceInstance> serviceInstancesByApplicationName() {
+    public List<Map<String, String>> serviceInstancesOverview() {
+        return discoveryClient.getServices().stream()
+            .map(s -> discoveryClient.getInstances(s))
+            .flatMap(il -> il.stream())
+            .map(i -> new HashMap<String, String>() {{
+                put("instanceId", i.getInstanceId());
+                put("uri", i.getUri().toString());
+            }})
+            .collect(toList());
+    }
+
+    @GetMapping(
+        value    = "/demo2services/details",
+        produces = "application/json")
+    public List<ServiceInstance> serviceInstancesDetails() {
         return this.discoveryClient.getInstances("demo2");
     }
 

@@ -31,12 +31,16 @@ Expect a response similar to (you will see another hostname...):
 
 Try the DiscoveryClient in `demo1`:
 
-    curl localhost:7001/demo2services -s | jq -r .[].instanceInfo.instanceId
+    curl localhost:7001/demo2services/details -s | jq -r .[].instanceInfo.instanceId
 
 Expect a response like:
 
     magnus-mbp32.lan:demo2:7002
     magnus-mbp32.lan:demo2:7003
+
+Also try out the DiscoveryClient in `demo1`:
+
+    curl localhost:7001/demo2services/oveview -s | jq 
 
 Call the `Demo1` service from the `Demo2` service a couple of times using:
 
